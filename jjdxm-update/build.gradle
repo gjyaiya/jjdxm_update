@@ -9,7 +9,7 @@ ext {
     jjdxm_groupId = 'com.dou361.update'
     jjdxm_artifactId = 'jjdxm-update'
 
-    jjdxm_libraryVersion = '1.0.6'
+    jjdxm_libraryVersion = '2.0.1'
     jjdxm_libraryName = 'jjdxm-update'
     jjdxm_libraryDescription = 'this is a update library of the application'
 
@@ -59,5 +59,5 @@ dependencies {
 }
 
 //apply from: 'https://raw.githubusercontent.com/jjdxmashl/jjdxm_ecodingprocess/master/bulidlib.gradle'
-//apply from: 'https://raw.githubusercontent.com/jjdxmashl/jjdxm_ecodingprocess/master/bintray.gradle'
-apply from: 'bintray.gradle'
+apply from: 'https://raw.githubusercontent.com/jjdxmashl/jjdxm_ecodingprocess/master/bintray.gradle'
+//apply from: 'bintray.gradle'
