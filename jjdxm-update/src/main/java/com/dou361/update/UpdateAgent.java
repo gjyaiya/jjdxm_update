@@ -20,6 +20,7 @@ import com.dou361.update.view.UpdateDialogActivity;
 public class UpdateAgent {
     private static UpdateAgent updater;
     private IUpdateExecutor executor;
+    private Activity mActivity;
 
     private UpdateAgent() {
         executor = UpdateExecutor.getInstance();
@@ -35,10 +36,8 @@ public class UpdateAgent {
 
     /**
      * check out whether or not there is a new version on internet
-     *
-     * @param activity The activity who need to show update dialog
      */
-    public void onlineCheck(Activity activity) {
+    public void onlineCheck() {
         OnlineCheckWorker checkWorker = new OnlineCheckWorker();
         RequestType requestType = UpdateHelper.getInstance().getRequestMethod();
         checkWorker.setRequestMethod(requestType);
@@ -65,34 +64,36 @@ public class UpdateAgent {
      *
      * @param activity The activity who need to show update dialog
      */
-    public void checkUpdate(final Activity activity) {
+    public void checkUpdate(Activity activity) {
         UpdateWorker checkWorker = new UpdateWorker();
         RequestType requestType = UpdateHelper.getInstance().getRequestMethod();
         checkWorker.setRequestMethod(requestType);
         checkWorker.setUrl(UpdateHelper.getInstance().getCheckUrl());
         checkWorker.setParams(UpdateHelper.getInstance().getCheckParams());
         checkWorker.setParser(UpdateHelper.getInstance().getCheckJsonParser());
+        mActivity = activity;
 
         final UpdateListener mUpdate = UpdateHelper.getInstance().getUpdateListener();
         checkWorker.setUpdateListener(new UpdateListener() {
             @Override
             public void hasUpdate(Update update) {
+                if(mActivity == null) return;
                 if (mUpdate != null) {
                     mUpdate.hasUpdate(update);
                 }
                 if (UpdateHelper.getInstance().getUpdateType() == UpdateType.autowifidown) {
-                    Intent intent = new Intent(activity, DownloadingService.class);
+                    Intent intent = new Intent(mActivity, DownloadingService.class);
                     intent.putExtra(UpdateConstants.DATA_ACTION, UpdateConstants.START_DOWN);
                     intent.putExtra(UpdateConstants.DATA_UPDATE, update);
-                    activity.startService(intent);
+                    mActivity.startService(intent);
                     return;
                 }
 
-                Intent intent = new Intent(activity, UpdateDialogActivity.class);
+                Intent intent = new Intent(mActivity, UpdateDialogActivity.class);
                 intent.putExtra(UpdateConstants.DATA_UPDATE, update);
                 intent.putExtra(UpdateConstants.DATA_ACTION, UpdateConstants.UPDATE_TIE);
                 intent.putExtra(UpdateConstants.START_TYPE, true);
-                activity.startActivity(intent);
+                mActivity.startActivity(intent);
             }
 
             @Override
@@ -133,31 +134,33 @@ public class UpdateAgent {
         executor.check(checkWorker);
     }
 
-    public void checkNoUrlUpdate(final Activity activity) {
+    public void checkNoUrlUpdate(Activity activity) {
         UpdateNoUrlWorker checkWorker = new UpdateNoUrlWorker();
         checkWorker.setRequestResultData(UpdateHelper.getInstance().getRequestResultData());
         checkWorker.setParser(UpdateHelper.getInstance().getCheckJsonParser());
+        mActivity = activity;
 
         final UpdateListener mUpdate = UpdateHelper.getInstance().getUpdateListener();
         checkWorker.setUpdateListener(new UpdateListener() {
             @Override
             public void hasUpdate(Update update) {
+                if(mActivity == null) return;
                 if (mUpdate != null) {
                     mUpdate.hasUpdate(update);
                 }
                 if (UpdateHelper.getInstance().getUpdateType() == UpdateType.autowifidown) {
-                    Intent intent = new Intent(activity, DownloadingService.class);
+                    Intent intent = new Intent(mActivity, DownloadingService.class);
                     intent.putExtra(UpdateConstants.DATA_ACTION, UpdateConstants.START_DOWN);
                     intent.putExtra(UpdateConstants.DATA_UPDATE, update);
-                    activity.startService(intent);
+                    mActivity.startService(intent);
                     return;
                 }
 
-                Intent intent = new Intent(activity, UpdateDialogActivity.class);
+                Intent intent = new Intent(mActivity, UpdateDialogActivity.class);
                 intent.putExtra(UpdateConstants.DATA_UPDATE, update);
                 intent.putExtra(UpdateConstants.DATA_ACTION, UpdateConstants.UPDATE_TIE);
                 intent.putExtra(UpdateConstants.START_TYPE, true);
-                activity.startActivity(intent);
+                mActivity.startActivity(intent);
             }
 
             @Override
@@ -198,4 +201,7 @@ public class UpdateAgent {
         executor.checkNoUrl(checkWorker);
     }
 
+    public void onAcDestory(){
+        mActivity = null;
+    }
 }

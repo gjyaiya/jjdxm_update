@@ -55,7 +55,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile rootProject.ext.jjdxm_v4
-    compile 'com.dou361.download:jjdxm-download:1.0.3'
+    compile 'com.github.gjyaiya:jjdxm_download:v2.0.0'
 }
 
 //apply from: 'https://raw.githubusercontent.com/jjdxmashl/jjdxm_ecodingprocess/master/bulidlib.gradle'
