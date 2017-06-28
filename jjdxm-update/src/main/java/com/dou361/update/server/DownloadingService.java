@@ -153,9 +153,11 @@ public class DownloadingService extends Service {
             int action = intent.getIntExtra(UpdateConstants.DATA_ACTION, 0);
             if (action == UpdateConstants.START_DOWN) {
                 update = (Update) intent.getSerializableExtra(UpdateConstants.DATA_UPDATE);
-                url = update.getUpdateUrl();
-                if (update != null && !TextUtils.isEmpty(url)) {
-                    manage.startDownload(url);
+                if(update != null){
+                    url = update.getUpdateUrl();
+                    if (!TextUtils.isEmpty(url)) {
+                        manage.startDownload(url);
+                    }
                 }
             } else if (action == UpdateConstants.PAUSE_DOWN) {
                 if (manage.isDownloading(url)) {
